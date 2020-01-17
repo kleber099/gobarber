@@ -58,6 +58,16 @@ class AppointmentController {
         .json({ error: 'You can only create appointments with providers' });
     }
 
+    const isUser = await User.findOne({
+      where: { id: req.userId, provider: false }
+    });
+
+    if (!isUser) {
+      return res
+        .status(400)
+        .json({ error: 'You can only create appointments to provider' });
+    }
+
     const hourStart = startOfHour(parseISO(date));
 
     if (isBefore(hourStart, new Date())) {
